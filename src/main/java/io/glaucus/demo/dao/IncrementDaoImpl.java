@@ -15,8 +15,7 @@ import io.glaucus.demo.exception.IncrementException;
 import io.glaucus.demo.service.IncrementWorker;
 
 /**
- * Implementation of data access interface for
- * Increment DB operation.
+ * Implementation of data access interface for Increment DB operation.
  * 
  * @author Arjun M.C.
  * @version 1.0
@@ -32,22 +31,16 @@ public class IncrementDaoImpl implements IncrementDao {
 	@Value("${thread.pool.size}")
 	private int THREAD_POOL_SIZE;
 
-	@Value("${max.open.sessions}")
-	private int MAX_OPEN_SESSIONS;
-
 	/**
-	 * This method provides the concrete implementation
-	 * of DB update
+	 * This method provides the concrete implementation of DB update
 	 * 
 	 */
 	@Override
 	public void increment() throws IncrementException {
 
-		// sessionFactory.getCurrentSession().persist(ie);
-
 		try {
 			ExecutorService pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-			Runnable workerThread = new IncrementWorker(sessionFactory, MAX_OPEN_SESSIONS);
+			Runnable workerThread = new IncrementWorker(sessionFactory);
 			pool.execute(workerThread);
 			pool.shutdown();
 		} catch (NullPointerException npe) {

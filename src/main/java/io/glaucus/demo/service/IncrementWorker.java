@@ -1,5 +1,6 @@
 package io.glaucus.demo.service;
 
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -7,8 +8,7 @@ import org.hibernate.Transaction;
 import io.glaucus.demo.model.IncrementEntity;
 
 /**
- * This is a thread worker class that
- * updates the counter value in the DB.
+ * This is a thread worker class that updates the counter value in the DB.
  * 
  * @author Arjun M.C.
  * @version 1.0
@@ -17,32 +17,26 @@ import io.glaucus.demo.model.IncrementEntity;
 public class IncrementWorker implements Runnable {
 
 	private SessionFactory sessionFactory;
-	private int maxOpenSessions;
 
-	public IncrementWorker(SessionFactory sessionFactory, int maxOpenSessions) {
+	public IncrementWorker(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-		this.maxOpenSessions = maxOpenSessions;
 	}
 
 	public void run() {
 
-		synchronized (sessionFactory) {
-			while (sessionFactory.getStatistics().getSessionOpenCount() >= maxOpenSessions) {
-				try {
-					sessionFactory.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			Session session = sessionFactory.openSession();
+		Session session = null;
+		try {
+			session = sessionFactory.openSession();
 			Transaction tx = session.beginTransaction();
-			IncrementEntity currentIe = (IncrementEntity) session.createCriteria(IncrementEntity.class).uniqueResult();
+			IncrementEntity currentIe = session.get(IncrementEntity.class, 0, LockMode.UPGRADE_NOWAIT);
 			Integer currentValue = currentIe.getValue() + 1;
 			currentIe.setValue(currentValue);
 			session.update(currentIe);
 			tx.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
 			session.close();
-			sessionFactory.notify();
 		}
 
 	}
