@@ -3,8 +3,6 @@ package io.glaucus.demo.dao;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.transaction.Transactional;
-
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +20,6 @@ import io.glaucus.demo.service.IncrementWorker;
  * @since 2018-03-25
  */
 @Repository
-@Transactional
 public class IncrementDaoImpl implements IncrementDao {
 
 	@Autowired

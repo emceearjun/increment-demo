@@ -9,8 +9,8 @@ import io.glaucus.demo.exception.IncrementException;
 import io.glaucus.demo.model.ApiResponse;
 
 /**
- * Service interface that provides the implementation
- * for {@link IncrementService} interface.
+ * Service interface that provides the implementation for
+ * {@link IncrementService} interface.
  * 
  * @author Arjun M.C.
  * @version 1.0
@@ -23,8 +23,7 @@ public class IncrementServiceImpl implements IncrementService {
 	IncrementDao incrementDao;
 
 	/**
-	 * This method calls the data access method
-	 * to increment the counter value.
+	 * This method calls the data access method to increment the counter value.
 	 * Returns ApiResponse with the success/error code and message.
 	 * 
 	 * @return ApiResponse
